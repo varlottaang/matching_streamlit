@@ -180,7 +180,8 @@ def part1(mentors_df, mentees_df):
 
 def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
     # Check for required columns in mentors_df and mentees_df
-    required_mentor_columns = ['name_id', 'email', 'First Name', 'Last Name', 'Senior', 'timezone', 'keywords']
+    required_mentor_columns = ['name_id', 'email', 'Senior', 'timezone', 'keywords']
+    optional_mentor_columns = ['First Name', 'Last Name']
     for col in required_mentor_columns:
         if col not in mentors_df.columns:
             st.error(f"'{col}' column is missing in mentors_df.")
@@ -246,7 +247,15 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
                 })
                 all_matches_df = pd.concat([all_matches_df, new_match], ignore_index=True)
 
-    mentor_columns = ['name_id', 'email', 'First Name', 'Last Name']
+    mentor_columns = ['name_id', 'email']
+    groupby_columns = ['Mentor', 'email', 'Timezone']
+    if 'First Name' in mentors_df.columns:
+        mentor_columns.append('First Name')
+        groupby_columns.append('First Name')
+    if 'Last Name' in mentors_df.columns:
+        mentor_columns.append('Last Name')
+        groupby_columns.append('Last Name')
+
     mentee_columns = ['name_id', 'email']
 
     all_matches_df = all_matches_df.merge(
@@ -257,7 +266,6 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
         mentees_df[mentee_columns], left_on='Mentee', right_on='name_id', suffixes=('', '_mentee')
     ).drop('name_id', axis=1)
 
-    groupby_columns = ['Mentor', 'email', 'Timezone', 'First Name', 'Last Name']
     aggregate_columns = ['Mentee', 'email_mentee']
 
     groups_df = all_matches_df.groupby(groupby_columns)[aggregate_columns].agg(list).reset_index()
@@ -268,6 +276,7 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
     st.success("Reassignment complete. Results saved to 'reassigned_mentor_mentee_groups.csv'.")
     st.dataframe(groups_df)
     st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_2")
+
 
 
 ###################################################################################################################
