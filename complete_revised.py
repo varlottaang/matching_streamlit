@@ -50,127 +50,114 @@ def prepare_mentee_embeddings(mentees_df):
 ###########
 # PART 1 MATCHING
 
-def part1(mentors_df, mentees_df):
-    # Check for required columns
-    required_columns = ['name_id', 'keywords', 'Senior', 'timezone', 'email']
-    for col in required_columns:
-        if col not in mentors_df.columns:
+def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
+    # List all columns from the dataframes
+    mentor_columns = mentors_df.columns.tolist()
+    mentee_columns = mentees_df.columns.tolist()
+
+    # Define required and optional columns
+    required_mentor_columns = ['name_id', 'email', 'Senior', 'timezone', 'keywords']
+    optional_mentor_columns = ['First Name', 'Last Name']
+
+    required_mentee_columns = ['name_id', 'email', 'Senior', 'timezone', 'preference1', 'preference2', 'preference3']
+    optional_mentee_columns = ['weighted_preferences']
+
+    # Check for required columns in mentors_df
+    for col in required_mentor_columns:
+        if col not in mentor_columns:
             st.error(f"'{col}' column is missing in mentors_df.")
             return
-        if col not in mentees_df.columns and col != 'keywords':
+
+    # Check for required columns in mentees_df
+    for col in required_mentee_columns:
+        if col not in mentee_columns:
             st.error(f"'{col}' column is missing in mentees_df.")
             return
 
+    # Prepare the mentee embeddings
     mentees_df = prepare_mentee_embeddings(mentees_df)
 
-    mentors_df['Senior'] = mentors_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
-    mentees_df['Senior'] = mentees_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
+    # Ensure the necessary columns are present in mentor_mentee_groups_df
+    required_group_columns = ['Mentor', 'Matched Mentees']
+    for col in required_group_columns:
+        if col not in mentor_mentee_groups_df.columns:
+            st.error(f"'{col}' column is missing in mentor_mentee_groups_df.")
+            return
 
-    mentor_embeddings = model.encode(mentors_df['keywords'].tolist(), convert_to_tensor=True, show_progress_bar=True)
-    mentee_weighted_embeddings = model.encode(mentees_df['weighted_preferences'].tolist(), convert_to_tensor=True, show_progress_bar=True)
+    st.write("mentor_mentee_groups_df columns:", mentor_mentee_groups_df.columns.tolist())
+
+    leaving_mentors = [mentor.strip() for mentor in leaving_mentors.split(',')]
+
+    mentees_to_reassign = []
+    for _, row in mentor_mentee_groups_df.iterrows():
+        mentor = row['Mentor']
+        if mentor in leaving_mentors:
+            mentees_to_reassign.extend(eval(row['Matched Mentees']))
 
     all_matches_df = pd.DataFrame(columns=['Mentee', 'Mentor', 'Timezone', 'Similarity Score'])
 
-    for timezone in mentors_df['timezone'].unique():
-        filtered_mentors = mentors_df[mentors_df['timezone'] == timezone]
-        filtered_mentees = mentees_df[mentees_df['timezone'] == timezone]
+    for mentee in mentees_to_reassign:
+        mentee_info = mentees_df[mentees_df['name_id'] == mentee]
+        if not mentee_info.empty:
+            mentee_info = mentee_info.iloc[0]
+            mentee_embedding = model.encode([mentee_info['weighted_preferences']], convert_to_tensor=True)
+            mentee_timezone = mentee_info['timezone']
+            mentee_is_senior = mentee_info['Senior'].strip().lower() == 'senior'
 
-        if filtered_mentors.empty or filtered_mentees.empty:
-            continue
+            available_mentors = mentors_df[(mentors_df['timezone'] == mentee_timezone) & 
+                                           (~mentors_df['name_id'].isin(leaving_mentors))]
+            if mentee_is_senior:
+                available_mentors = available_mentors[available_mentors['Senior'].str.strip().str.lower() == 'senior']
 
-        filtered_mentor_embeddings = model.encode(filtered_mentors['keywords'].tolist(), convert_to_tensor=True)
-        filtered_mentee_embeddings = model.encode(filtered_mentees['weighted_preferences'].tolist(), convert_to_tensor=True)
-        mentor_assignments = np.zeros(len(filtered_mentors))
-        matches_with_scores = []
+            if not available_mentors.empty:
+                available_mentor_embeddings = model.encode(available_mentors['keywords'].tolist(), convert_to_tensor=True)
+                similarities = util.cos_sim(mentee_embedding, available_mentor_embeddings)[0]
 
-        for mentee_idx, mentee_embedding in enumerate(filtered_mentee_embeddings):
-            similarities = util.cos_sim(mentee_embedding, filtered_mentor_embeddings)[0]
-            mentors_priority = sorted(
-                range(len(filtered_mentors)),
-                key=lambda x: (mentor_assignments[x], -similarities[x].item())
-            )
+                mentors_priority = sorted(
+                    range(len(available_mentors)),
+                    key=lambda x: -similarities[x].item()
+                )
 
-            for mentor_idx in mentors_priority:
-                if mentor_assignments[mentor_idx] < np.ceil(len(filtered_mentees) / len(filtered_mentors)):
-                    mentor_name = filtered_mentors.iloc[mentor_idx]['name_id']
-                    mentee_name = filtered_mentees.iloc[mentee_idx]['name_id']
-                    similarity_score = similarities[mentor_idx].item()
+                best_mentor_idx = mentors_priority[0]
+                best_mentor = available_mentors.iloc[best_mentor_idx]['name_id']
+                similarity_score = similarities[best_mentor_idx].item()
 
-                    matches_with_scores.append((mentee_name, mentor_name, timezone, similarity_score))
-                    mentor_assignments[mentor_idx] += 1
-                    break
+                new_match = pd.DataFrame({
+                    'Mentee': [mentee],
+                    'Mentor': [best_mentor],
+                    'Timezone': [mentee_timezone],
+                    'Similarity Score': [similarity_score]
+                })
+                all_matches_df = pd.concat([all_matches_df, new_match], ignore_index=True)
 
-        current_matches_df = pd.DataFrame(matches_with_scores, columns=['Mentee', 'Mentor', 'Timezone', 'Similarity Score'])
-        all_matches_df = pd.concat([all_matches_df, current_matches_df], ignore_index=True)
+    # Dynamically add optional columns if present
+    mentor_groupby_columns = ['Mentor', 'email', 'Timezone']
+    if 'First Name' in mentor_columns:
+        mentor_groupby_columns.append('First Name')
+    if 'Last Name' in mentor_columns:
+        mentor_groupby_columns.append('Last Name')
 
-    if all_matches_df.empty:
-        st.warning("No matches found. Please check your data and try again.")
-        return
+    mentee_columns_to_use = ['name_id', 'email']
 
-    # Check for seniority mismatches
-    mismatches = []
-    for _, row in all_matches_df.iterrows():
-        mentee_name = row['Mentee']
-        mentor_name = row['Mentor']
-        mentee_is_senior = mentees_df[mentees_df['name_id'] == mentee_name]['Senior'].values[0]
-        mentor_is_senior = mentors_df[mentors_df['name_id'] == mentor_name]['Senior'].values[0]
+    all_matches_df = all_matches_df.merge(
+        mentors_df[['name_id', 'email'] + [col for col in optional_mentor_columns if col in mentor_columns]], 
+        left_on='Mentor', right_on='name_id', suffixes=('', '_mentor')
+    ).drop('name_id', axis=1)
 
-        if mentee_is_senior and not mentor_is_senior:
-            mismatches.append((mentee_name, row['Timezone']))
+    all_matches_df = all_matches_df.merge(
+        mentees_df[mentee_columns_to_use], left_on='Mentee', right_on='name_id', suffixes=('', '_mentee')
+    ).drop('name_id', axis=1)
 
-    # Reassign mismatched mentees with similarity score consideration
-    random.seed(42)
-    mentee_assignments = defaultdict(list)
-    mentor_assignments = defaultdict(list)
+    aggregate_columns = ['Mentee', 'email_mentee']
 
-    for _, row in all_matches_df.iterrows():
-        mentor_name = row['Mentor']
-        mentee_name = row['Mentee']
-        mentor_assignments[mentor_name].append((mentee_name, row['Similarity Score']))
+    groups_df = all_matches_df.groupby(mentor_groupby_columns)[aggregate_columns].agg(list).reset_index()
+    groups_df.rename(columns={'email': 'Mentor Email', 'email_mentee': 'Mentees Email', 'Mentee': 'Matched Mentees'}, inplace=True)
+    groups_df.to_csv('reassigned_mentor_mentee_groups.csv', index=False)
+    st.session_state['reassigned_groups_df'] = groups_df
 
-    for mentee, timezone in mismatches:
-        mentee_embedding = model.encode([mentees_df[mentees_df['name_id'] == mentee]['weighted_preferences'].values[0]], convert_to_tensor=True)
-        available_mentors = mentors_df[(mentors_df['timezone'] == timezone) & (mentors_df['Senior'] == True)]
-
-        if not available_mentors.empty:
-            available_mentor_embeddings = model.encode(available_mentors['keywords'].tolist(), convert_to_tensor=True)
-            similarities = util.cos_sim(mentee_embedding, available_mentor_embeddings)[0]
-            best_mentor_idx = similarities.argmax().item()
-            best_mentor = available_mentors.iloc[best_mentor_idx]['name_id']
-            similarity_score = similarities[best_mentor_idx].item()
-
-            # Find the current mentor
-            current_mentor = next((mentor for mentor, mentees in mentor_assignments.items() if mentee in [m[0] for m in mentees]), None)
-            if current_mentor:
-                mentor_assignments[current_mentor] = [m for m in mentor_assignments[current_mentor] if m[0] != mentee]
-            mentor_assignments[best_mentor].append((mentee, similarity_score))
-
-    new_mentor_mentee_groups = []
-    for mentor, mentees in mentor_assignments.items():
-        timezone = mentors_df[mentors_df['name_id'] == mentor]['timezone'].values[0]
-        mentor_email = mentors_df[mentors_df['name_id'] == mentor]['email'].values[0]
-        mentees_with_scores = [{'Mentee': m[0], 'Similarity Score': m[1]} for m in mentees]
-        mentee_emails = mentees_df[mentees_df['name_id'].isin([m['Mentee'] for m in mentees_with_scores])]['email'].tolist()
-        new_mentor_mentee_groups.append({'Mentor': mentor, 'Timezone': timezone, 'Matched Mentees': [m['Mentee'] for m in mentees_with_scores], 'Mentor Email': mentor_email, 'Mentees Email': mentee_emails})
-
-    new_mentor_mentee_groups_df = pd.DataFrame(new_mentor_mentee_groups)
-
-    new_mentor_mentee_groups_df['Matched Mentees'] = new_mentor_mentee_groups_df['Matched Mentees'].apply(str)
-    new_mentor_mentee_groups_df['Mentees Email'] = new_mentor_mentee_groups_df['Mentees Email'].apply(str)
-    new_mentor_mentee_groups_df.to_csv('mentor_mentee_groups.csv', index=False)
-
-    st.session_state['all_matches_df'] = all_matches_df
-    st.session_state['groups_df'] = new_mentor_mentee_groups_df
-
-    st.success("Matching complete. Results saved to 'mentee_mentor_matches.csv' and 'mentor_mentee_groups.csv'.")
-    st.dataframe(all_matches_df)
-    st.dataframe(new_mentor_mentee_groups_df)
-    st.download_button(label="Download Matches CSV", data=all_matches_df.to_csv(index=False), file_name='mentee_mentor_matches.csv', key="download_matches_1")
-    st.download_button(label="Download Groups CSV", data=new_mentor_mentee_groups_df.to_csv(index=False), file_name='mentor_mentee_groups.csv', key="download_groups_1")
-
-
-
-
+    st.success("Reassignment complete. Results saved to 'reassigned_mentor_mentee_groups.csv'.")
+    st.dataframe(groups_df)
+    st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_2")
 
 
 #####################################################
