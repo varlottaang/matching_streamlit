@@ -54,6 +54,7 @@ def part1(mentors_df, mentees_df):
     # Check for required columns in mentors_df and mentees_df
     required_mentor_columns = ['name_id', 'keywords', 'timezone', 'email', 'Senior']
     required_mentee_columns = ['name_id', 'preference1', 'preference2', 'preference3', 'timezone', 'email', 'Senior']
+    optional_columns = ['First Name', 'Last Name']
 
     for col in required_mentor_columns:
         if col not in mentors_df.columns:
@@ -156,12 +157,21 @@ def part1(mentors_df, mentees_df):
         mentor_email = mentors_df[mentors_df['name_id'] == mentor]['email'].values[0]
         mentees_with_scores = [{'Mentee': m[0], 'Similarity Score': m[1]} for m in mentees]
         mentee_emails = mentees_df[mentees_df['name_id'].isin([m['Mentee'] for m in mentees_with_scores])]['email'].tolist()
-        new_mentor_mentee_groups.append({'Mentor': mentor, 'Timezone': timezone, 'Matched Mentees': [m['Mentee'] for m in mentees_with_scores], 'Mentor Email': mentor_email, 'Mentees Email': mentee_emails})
+        group = {'Mentor': mentor, 'Timezone': timezone, 'Matched Mentees': [m['Mentee'] for m in mentees_with_scores], 'Mentor Email': mentor_email, 'Mentees Email': mentee_emails}
+        for col in optional_columns:
+            if col in mentors_df.columns:
+                group[f'Mentor {col}'] = mentors_df[mentors_df['name_id'] == mentor][col].values[0]
+            if col in mentees_df.columns:
+                group[f'Mentees {col}'] = mentees_df[mentees_df['name_id'].isin([m['Mentee'] for m in mentees_with_scores])][col].tolist()
+        new_mentor_mentee_groups.append(group)
 
     new_mentor_mentee_groups_df = pd.DataFrame(new_mentor_mentee_groups)
 
     new_mentor_mentee_groups_df['Matched Mentees'] = new_mentor_mentee_groups_df['Matched Mentees'].apply(str)
     new_mentor_mentee_groups_df['Mentees Email'] = new_mentor_mentee_groups_df['Mentees Email'].apply(str)
+    for col in optional_columns:
+        if f'Mentees {col}' in new_mentor_mentee_groups_df.columns:
+            new_mentor_mentee_groups_df[f'Mentees {col}'] = new_mentor_mentee_groups_df[f'Mentees {col}'].apply(str)
     new_mentor_mentee_groups_df.to_csv('mentor_mentee_groups.csv', index=False)
 
     st.session_state['all_matches_df'] = all_matches_df
@@ -173,7 +183,6 @@ def part1(mentors_df, mentees_df):
     st.download_button(label="Download Matches CSV", data=all_matches_df.to_csv(index=False), file_name='mentee_mentor_matches.csv', key="download_matches_1")
     st.download_button(label="Download Groups CSV", data=new_mentor_mentee_groups_df.to_csv(index=False), file_name='mentor_mentee_groups.csv', key="download_groups_1")
 
-
 #####################################################
 ##################
 #################
@@ -183,6 +192,7 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
     # Check for required columns in mentors_df and mentees_df
     required_mentor_columns = ['name_id', 'keywords', 'timezone', 'email', 'Senior']
     required_mentee_columns = ['name_id', 'preference1', 'preference2', 'preference3', 'timezone', 'email', 'Senior']
+    optional_columns = ['First Name', 'Last Name']
 
     for col in required_mentor_columns:
         if col not in mentors_df.columns:
@@ -250,8 +260,8 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
                 })
                 all_matches_df = pd.concat([all_matches_df, new_match], ignore_index=True)
 
-    mentor_columns = ['name_id', 'email']
-    groupby_columns = ['Mentor', 'email', 'Timezone']
+    mentor_columns = ['name_id', 'email'] + [col for col in optional_columns if col in mentors_df.columns]
+    groupby_columns = ['Mentor', 'email', 'Timezone'] + [col for col in optional_columns if col in mentors_df.columns]
 
     mentee_columns = ['name_id', 'email']
 
@@ -277,6 +287,7 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
 
 
 
+
 ###################################################################################################################
 ########################
 # PART 3 FIND BEST MATCH
@@ -285,6 +296,7 @@ def part3(mentors_df, mentees_df, leaving_mentors_input):
     # Check for required columns in mentors_df and mentees_df
     required_mentor_columns = ['name_id', 'keywords', 'timezone', 'email', 'Senior']
     required_mentee_columns = ['name_id', 'preference1', 'preference2', 'preference3', 'timezone', 'email', 'Senior']
+    optional_columns = ['First Name', 'Last Name']
 
     for col in required_mentor_columns:
         if col not in mentors_df.columns:
@@ -331,14 +343,20 @@ def part3(mentors_df, mentees_df, leaving_mentors_input):
 
         filtered_mentor_embeddings = mentor_embeddings[[mentors_df.index.get_loc(index) for index in filtered_mentors.index]]
         best_match = find_best_match(mentee_embedding, filtered_mentors, filtered_mentor_embeddings)
-        final_matches.append({
+        match = {
             'Mentee ID': mentee_name,
             'Mentee Email': mentee_row['email'],
             'Mentor ID': best_match['Mentor ID'],
             'Mentor Email': best_match['Mentor Email'],
             'Similarity Score': best_match['Similarity Score'],
             'Timezone': mentee_timezone
-        })
+        }
+        for col in optional_columns:
+            if col in mentors_df.columns:
+                match[f'Mentor {col}'] = mentors_df[mentors_df['name_id'] == best_match['Mentor ID']][col].values[0]
+            if col in mentees_df.columns:
+                match[f'Mentee {col}'] = mentee_row[col]
+        final_matches.append(match)
 
     final_matches_df = pd.DataFrame(final_matches)
     final_matches_df.to_csv("best_mentee_mentor_matches.csv", index=False)
@@ -347,7 +365,6 @@ def part3(mentors_df, mentees_df, leaving_mentors_input):
     st.success("Best matches found. Results saved to 'best_mentee_mentor_matches.csv'.")
     st.dataframe(final_matches_df)
     st.download_button(label="Download Best Matches CSV", data=final_matches_df.to_csv(index=False), file_name='best_mentee_mentor_matches.csv', key="download_best_matches_3")
-
 
 ###################################################################################################################
 ########################
@@ -358,6 +375,7 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
     required_mentor_columns = ['name_id', 'keywords', 'timezone', 'email', 'Senior']
     required_mentee_columns = ['name_id', 'preference1', 'preference2', 'preference3', 'timezone', 'email', 'Senior']
     required_group_columns = ['Mentor', 'Timezone', 'Matched Mentees', 'Mentor Email', 'Mentees Email']
+    optional_columns = ['First Name', 'Last Name']
 
     for col in required_mentor_columns:
         if col not in mentors_df.columns:
@@ -425,8 +443,8 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
         all_new_matches_df = pd.concat([all_new_matches_df, current_matches_df], ignore_index=True)
 
     # Merge additional mentor and mentee details for better visibility
-    mentor_columns = ['name_id', 'email']
-    mentee_columns = ['name_id', 'email']
+    mentor_columns = ['name_id', 'email'] + [col for col in optional_columns if col in mentors_df.columns]
+    mentee_columns = ['name_id', 'email'] + [col for col in optional_columns if col in new_mentees_df.columns]
 
     all_new_matches_df = all_new_matches_df.merge(
         mentors_df[mentor_columns], left_on='Mentor', right_on='name_id', suffixes=('', '_mentor')
@@ -467,6 +485,7 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
     st.dataframe(new_mentees_added_df)
     st.download_button(label="Download Updated Groups CSV", data=updated_groups.to_csv(index=False), file_name='updated_mentor_mentee_groups.csv', key="download_updated_groups_1")
     st.download_button(label="Download New Mentees Added Groups CSV", data=new_mentees_added_df.to_csv(index=False), file_name='new_mentees_added_groups.csv', key="download_new_mentees_added_groups")
+
 
 ###################################################################################################################
 ########################
