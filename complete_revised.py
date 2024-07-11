@@ -354,11 +354,28 @@ def part3(mentors_df, mentees_df, leaving_mentors_input):
 # PART 4: ADD NEW MENTEES TO EXISTING GROUPS
 
 def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
-    new_mentees_df = prepare_mentee_embeddings(new_mentees_df)
+    # Check for required columns in mentors_df and new_mentees_df
+    required_mentor_columns = ['name_id', 'keywords', 'timezone', 'email', 'Senior']
+    required_mentee_columns = ['name_id', 'preference1', 'preference2', 'preference3', 'timezone', 'email', 'Senior']
+    required_group_columns = ['Mentor', 'Timezone', 'Matched Mentees', 'Mentor Email', 'Mentees Email']
 
-    if 'keywords' not in mentors_df.columns or 'Senior' not in mentors_df.columns or 'Senior' not in new_mentees_df.columns:
-        st.error("The 'keywords' or 'Senior' column is missing in the dataframes.")
-        return
+    for col in required_mentor_columns:
+        if col not in mentors_df.columns:
+            st.error(f"'{col}' column is missing in mentors_df.")
+            return
+
+    for col in required_mentee_columns:
+        if col not in new_mentees_df.columns:
+            st.error(f"'{col}' column is missing in new_mentees_df.")
+            return
+
+    for col in required_group_columns:
+        if col not in mentor_mentee_groups_df.columns:
+            st.error(f"'{col}' column is missing in mentor_mentee_groups_df.")
+            return
+
+    # Prepare the mentee embeddings
+    new_mentees_df = prepare_mentee_embeddings(new_mentees_df)
 
     mentors_df['Senior'] = mentors_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
     new_mentees_df['Senior'] = new_mentees_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
@@ -408,7 +425,7 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
         all_new_matches_df = pd.concat([all_new_matches_df, current_matches_df], ignore_index=True)
 
     # Merge additional mentor and mentee details for better visibility
-    mentor_columns = ['name_id', 'email', 'First Name', 'Last Name']
+    mentor_columns = ['name_id', 'email']
     mentee_columns = ['name_id', 'email']
 
     all_new_matches_df = all_new_matches_df.merge(
@@ -428,29 +445,28 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
         mentor = match['Mentor']
         mentee = match['Mentee']
         mentee_email = match['email_mentee']
-        mentor_mentee_groups_df.loc[mentor_mentee_groups_df['Mentor'] == mentor, 'Matched Mentees'].apply(lambda x: x.append(mentee))
-        mentor_mentee_groups_df.loc[mentor_mentee_groups_df['Mentor'] == mentor, 'Mentees Email'].apply(lambda x: x.append(mentee_email))
+        updated_groups.loc[updated_groups['Mentor'] == mentor, 'Matched Mentees'].apply(lambda x: x.append(mentee))
+        updated_groups.loc[updated_groups['Mentor'] == mentor, 'Mentees Email'].apply(lambda x: x.append(mentee_email))
 
     # Identify the groups where new mentees have been added
     updated_groups['New Mentees Added'] = updated_groups.apply(lambda row: any(mentee in row['Matched Mentees'] for mentee in all_new_matches_df['Mentee'].tolist()), axis=1)
     new_mentees_added_df = updated_groups[updated_groups['New Mentees Added']].drop(columns=['New Mentees Added'])
 
-    mentor_mentee_groups_df['Matched Mentees'] = mentor_mentee_groups_df['Matched Mentees'].apply(str)
-    mentor_mentee_groups_df['Mentees Email'] = mentor_mentee_groups_df['Mentees Email'].apply(str)
+    updated_groups['Matched Mentees'] = updated_groups['Matched Mentees'].apply(str)
+    updated_groups['Mentees Email'] = updated_groups['Mentees Email'].apply(str)
     new_mentees_added_df['Matched Mentees'] = new_mentees_added_df['Matched Mentees'].apply(str)
     new_mentees_added_df['Mentees Email'] = new_mentees_added_df['Mentees Email'].apply(str)
 
-    mentor_mentee_groups_df.to_csv('updated_mentor_mentee_groups.csv', index=False)
+    updated_groups.to_csv('updated_mentor_mentee_groups.csv', index=False)
     new_mentees_added_df.to_csv('new_mentees_added_groups.csv', index=False)
-    st.session_state['updated_groups_df'] = mentor_mentee_groups_df
+    st.session_state['updated_groups_df'] = updated_groups
     st.session_state['new_mentees_added_groups_df'] = new_mentees_added_df
 
     st.success("New mentees added. Updated groups saved to 'updated_mentor_mentee_groups.csv'. Groups with new mentees saved to 'new_mentees_added_groups.csv'.")
-    st.dataframe(mentor_mentee_groups_df)
+    st.dataframe(updated_groups)
     st.dataframe(new_mentees_added_df)
-    st.download_button(label="Download Updated Groups CSV", data=mentor_mentee_groups_df.to_csv(index=False), file_name='updated_mentor_mentee_groups.csv', key="download_updated_groups_1")
+    st.download_button(label="Download Updated Groups CSV", data=updated_groups.to_csv(index=False), file_name='updated_mentor_mentee_groups.csv', key="download_updated_groups_1")
     st.download_button(label="Download New Mentees Added Groups CSV", data=new_mentees_added_df.to_csv(index=False), file_name='new_mentees_added_groups.csv', key="download_new_mentees_added_groups")
-
 
 ###################################################################################################################
 ########################
