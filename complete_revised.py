@@ -282,7 +282,7 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
 
     st.success("Reassignment complete. Results saved to 'reassigned_mentor_mentee_groups.csv'.")
     st.dataframe(groups_df)
-    st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_2")
+    st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_3")
 
 
 
