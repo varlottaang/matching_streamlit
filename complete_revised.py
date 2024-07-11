@@ -51,11 +51,17 @@ def prepare_mentee_embeddings(mentees_df):
 # PART 1 MATCHING
 
 def part1(mentors_df, mentees_df):
-    mentees_df = prepare_mentee_embeddings(mentees_df)
+    # Check for required columns
+    required_columns = ['name_id', 'keywords', 'Senior', 'timezone', 'email']
+    for col in required_columns:
+        if col not in mentors_df.columns:
+            st.error(f"'{col}' column is missing in mentors_df.")
+            return
+        if col not in mentees_df.columns and col != 'keywords':
+            st.error(f"'{col}' column is missing in mentees_df.")
+            return
 
-    if 'keywords' not in mentors_df.columns or 'Senior' not in mentors_df.columns or 'Senior' not in mentees_df.columns:
-        st.error("The 'keywords' or 'Senior' column is missing in the dataframes.")
-        return
+    mentees_df = prepare_mentee_embeddings(mentees_df)
 
     mentors_df['Senior'] = mentors_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
     mentees_df['Senior'] = mentees_df['Senior'].apply(lambda x: x.strip().lower() == 'senior')
