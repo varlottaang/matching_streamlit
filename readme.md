@@ -64,7 +64,10 @@ Select the desired part to proceed with:
 To run the app locally, execute the following command:
 
 ```sh
-streamlit run matching_app.py
+pip install -r requirements.txt
+
+```sh
+streamlit run complete_revisedpy
 
 ## License
 The project is licensed under the MIT License.
