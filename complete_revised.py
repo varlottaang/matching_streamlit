@@ -661,7 +661,7 @@ st.set_page_config(page_title="Mentorship Matching", layout="wide")
 st.title("Mentorship Matching App 🧑🏿‍🏫👨🏻‍🏫👩‍🏫🧑🏻‍🎓👨‍🎓👩🏽‍🎓")
 mentors_df, mentees_df = load_files()
 
-st.sidebar.markdown("[Breakout 🎶](https://yewtu.be/watch?v=IIOJdMdS56k)")
+st.sidebar.markdown("[Breakout 🎶](https://youtu.be/IIOJdMdS56k?si=eInk2hYmMYAZtehG)")
 
 if mentors_df is not None and mentees_df is not None:
     st.sidebar.success("Files successfully uploaded.")
