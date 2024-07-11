@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 from wordcloud import WordCloud
 import seaborn as sns
 from collections import defaultdict
@@ -18,10 +19,11 @@ for state in ['mentors_df', 'mentees_df', 'all_matches_df', 'groups_df', 'reassi
     if state not in st.session_state:
         st.session_state[state] = None
 
+######## load files
 def load_files():
     st.sidebar.header('Upload your CSV files')
-    uploaded_mentors = st.sidebar.file_uploader("Upload Mentors CSV", type=['csv'])
-    uploaded_mentees = st.sidebar.file_uploader("Upload Mentees CSV", type=['csv'])
+    uploaded_mentors = st.sidebar.file_uploader("Upload Mentors CSV", type=['csv'], key="mentors_csv")
+    uploaded_mentees = st.sidebar.file_uploader("Upload Mentees CSV", type=['csv'], key="mentees_csv")
     
     if uploaded_mentors is not None and uploaded_mentees is not None:
         mentors_df = pd.read_csv(uploaded_mentors)
@@ -409,83 +411,172 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
 ########################
 # PART 5: DATA VISUALIZATION
 
-def part5(mentors_df, mentees_df):
-    if mentors_df is not None and mentees_df is not None:
-        st.header("Data Visualization")
+# Function to save plots to a PDF
+def save_plots_to_pdf(pdf_path, mentor_words, mentee_words, combined_words, timezone_counts):
+    with PdfPages(pdf_path) as pdf:
+        # Mentor word cloud
+        mentor_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(mentor_words)
+        plt.figure(figsize=(10, 5))
+        plt.title('Mentor Word Cloud')
+        plt.imshow(mentor_wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        pdf.savefig()
+        plt.close()
 
-        # 1. Mentor word cloud
+        # Mentee word cloud
+        mentee_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(mentee_words)
+        plt.figure(figsize=(10, 5))
+        plt.title('Mentee Word Cloud')
+        plt.imshow(mentee_wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        pdf.savefig()
+        plt.close()
+
+        # Combined word cloud
+        combined_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_words)
+        plt.figure(figsize=(10, 5))
+        plt.title('Combined Mentor and Mentee Word Cloud')
+        plt.imshow(combined_wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        pdf.savefig()
+        plt.close()
+
+        # Percentage of mentors and mentees across timezones
+        plt.figure(figsize=(10, 10))
+        plt.title('Percentage of Mentors and Mentees across Timezones')
+        plt.pie(timezone_counts, labels=timezone_counts.index, autopct='%1.1f%%', startangle=140)
+        plt.axis('equal')
+        pdf.savefig()
+        plt.close()
+
+        if 'groups_df' in st.session_state:
+            groups_df = st.session_state['groups_df']
+            # General Mentor/Mentees average group size
+            avg_group_size = groups_df['Matched Mentees'].apply(len).mean()
+            plt.figure()
+            plt.title('Average Group Size')
+            plt.text(0.5, 0.5, f"Average Group Size: {avg_group_size:.2f}", horizontalalignment='center', verticalalignment='center', fontsize=12)
+            plt.axis('off')
+            pdf.savefig()
+            plt.close()
+
+            # Average group size for each timezone
+            avg_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: np.mean([len(i) for i in x]))
+            plt.figure()
+            avg_group_size_tz.plot(kind='bar')
+            plt.title('Average Group Size by Timezone')
+            plt.ylabel('Average Group Size')
+            pdf.savefig()
+            plt.close()
+
+            # Biggest group size for each timezone
+            max_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: max([len(i) for i in x]))
+            plt.figure()
+            max_group_size_tz.plot(kind='bar')
+            plt.title('Biggest Group Size by Timezone')
+            plt.ylabel('Group Size')
+            pdf.savefig()
+            plt.close()
+
+            # Smallest group size for each timezone
+            min_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: min([len(i) for i in x]))
+            plt.figure()
+            min_group_size_tz.plot(kind='bar')
+            plt.title('Smallest Group Size by Timezone')
+            plt.ylabel('Group Size')
+            pdf.savefig()
+            plt.close()
+
+### PART 5 ...
+def part5(mentors_df, mentees_df, groups_df=None):
+    st.header("Data Visualization")
+
+    # Optional: Request to upload the groups CSV
+    st.subheader("Upload Groups CSV (optional)")
+    groups_file = st.file_uploader("", type=['csv'], key="groups_csv")
+    if groups_file is not None:
+        groups_df = pd.read_csv(groups_file)
+        st.session_state['groups_df'] = groups_df
+
+    if mentors_df is not None and mentees_df is not None:
+        # 5. Mentor word cloud
         st.subheader("Mentor Word Cloud")
         mentor_words = ' '.join(mentors_df['keywords'].astype(str))
         mentor_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(mentor_words)
         plt.figure(figsize=(10, 5))
+        plt.title('Mentor Word Cloud')
         plt.imshow(mentor_wordcloud, interpolation='bilinear')
         plt.axis('off')
         st.pyplot(plt)
 
-        # 2. Mentees word cloud
+        # 6. Mentees word cloud
         st.subheader("Mentee Word Cloud")
         mentee_words = ' '.join(mentees_df['preference1'].astype(str) + ' ' +
                                 mentees_df['preference2'].astype(str) + ' ' +
                                 mentees_df['preference3'].astype(str))
         mentee_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(mentee_words)
         plt.figure(figsize=(10, 5))
+        plt.title('Mentee Word Cloud')
         plt.imshow(mentee_wordcloud, interpolation='bilinear')
         plt.axis('off')
         st.pyplot(plt)
 
-        # 3. Combined mentors and mentees word cloud
+        # 7. Combined mentors and mentees word cloud
         st.subheader("Combined Mentor and Mentee Word Cloud")
         combined_words = mentor_words + ' ' + mentee_words
         combined_wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_words)
         plt.figure(figsize=(10, 5))
+        plt.title('Combined Mentor and Mentee Word Cloud')
         plt.imshow(combined_wordcloud, interpolation='bilinear')
         plt.axis('off')
         st.pyplot(plt)
 
-        # 4. Percentage of mentors and mentees across timezones
+        # 8. Percentage of mentors and mentees across timezones
         st.subheader("Percentage of Mentors and Mentees across Timezones")
         timezone_counts = pd.concat([mentors_df['timezone'], mentees_df['timezone']], axis=0).value_counts(normalize=True) * 100
         plt.figure(figsize=(10, 10))
+        plt.title('Percentage of Mentors and Mentees across Timezones')
         plt.pie(timezone_counts, labels=timezone_counts.index, autopct='%1.1f%%', startangle=140)
         plt.axis('equal')
-        plt.title('Percentage of Mentors and Mentees across Timezones')
         st.pyplot(plt)
 
-        # Request to upload the groups CSV
-        groups_file = st.file_uploader("Upload Groups CSV", type=['csv'])
-        if groups_file is not None:
-            groups_df = pd.read_csv(groups_file)
-
+        if groups_df is not None:
             # Convert 'Matched Mentees' from string representation of lists to actual lists
             groups_df['Matched Mentees'] = groups_df['Matched Mentees'].apply(eval)
 
-            # 5. General Mentor/Mentees average group size
+            # 1. General Mentor/Mentees average group size
             avg_group_size = groups_df['Matched Mentees'].apply(len).mean()
             st.subheader(f"Average Group Size: {avg_group_size:.2f}")
 
-            # 6. Average group size for each timezone
+            # 2. Average group size for each timezone
             avg_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: np.mean([len(i) for i in x]))
             st.subheader("Average Group Size by Timezone")
             st.dataframe(avg_group_size_tz)
 
-            # 7. Biggest group size for each timezone
+            # 3. Biggest group size for each timezone
             max_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: max([len(i) for i in x]))
             st.subheader("Biggest Group Size by Timezone")
             st.dataframe(max_group_size_tz)
 
-            # 8. Smallest group size for each timezone
+            # 4. Smallest group size for each timezone
             min_group_size_tz = groups_df.groupby('Timezone')['Matched Mentees'].apply(lambda x: min([len(i) for i in x]))
             st.subheader("Smallest Group Size by Timezone")
             st.dataframe(min_group_size_tz)
+
+        # Save visualizations to PDF
+        pdf_path = '/tmp/visualizations.pdf'
+        save_plots_to_pdf(pdf_path, mentor_words, mentee_words, combined_words, timezone_counts)
+        with open(pdf_path, "rb") as f:
+            st.download_button(label="Download Visualizations as PDF", data=f, file_name="visualizations.pdf", mime="application/pdf")
     else:
         st.warning("Please upload both mentors and mentees CSV files first.")
-
 
 
 ################################################################################################################
 ###############
 ### WEB INTERFACE
 
+# Interface setup
 st.set_page_config(page_title="Mentorship Matching", layout="wide")
 st.title("Mentorship Matching App 🧑🏿‍🏫👨🏻‍🏫👩‍🏫🧑🏻‍🎓👨‍🎓👩🏽‍🎓")
 mentors_df, mentees_df = load_files()
@@ -508,7 +599,7 @@ if mentors_df is not None and mentees_df is not None:
 
     elif page == "Part 2: Mentees Reassignment":
         st.header("Part 2: Mentees Reassignment")
-        groups_file = st.file_uploader("Upload Initial Groups CSV", type=['csv'])
+        groups_file = st.file_uploader("Upload Initial Groups CSV", type=['csv'], key="initial_groups_csv")
         if groups_file is not None:
             mentor_mentee_groups_df = pd.read_csv(groups_file)
             leaving_mentors = st.text_input("Enter leaving mentors' name_id, separated by commas")
@@ -529,8 +620,8 @@ if mentors_df is not None and mentees_df is not None:
 
     elif page == "Part 4: Add New Mentees to Existing Groups":
         st.header("Part 4: Add New Mentees to Existing Groups")
-        new_mentees_file = st.file_uploader("Upload New Mentees CSV", type=['csv'])
-        groups_file = st.file_uploader("Upload Existing Groups CSV", type=['csv'])
+        new_mentees_file = st.file_uploader("Upload New Mentees CSV", type=['csv'], key="new_mentees_csv")
+        groups_file = st.file_uploader("Upload Existing Groups CSV", type=['csv'], key="existing_groups_csv")
         if new_mentees_file is not None and groups_file is not None:
             new_mentees_df = pd.read_csv(new_mentees_file)
             mentor_mentee_groups_df = pd.read_csv(groups_file)
@@ -542,10 +633,8 @@ if mentors_df is not None and mentees_df is not None:
 
     elif page == "Part 5: Data Visualization":
         st.header("Part 5: Data Visualization")
-        groups_file = st.file_uploader("Upload Groups CSV", type=['csv'])
-        if groups_file is not None:
-            groups_df = pd.read_csv(groups_file)
-            part5(groups_df, mentors_df, mentees_df)
+        part5(mentors_df, mentees_df)
+
 else:
     st.warning("Please upload both mentors and mentees CSV files.")
 
