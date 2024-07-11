@@ -179,6 +179,26 @@ def part1(mentors_df, mentees_df):
 # PART 2 REASSIGNMENT
 
 def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
+    # Check for required columns in mentors_df and mentees_df
+    required_mentor_columns = ['name_id', 'email', 'First Name', 'Last Name', 'Senior', 'timezone', 'keywords']
+    for col in required_mentor_columns:
+        if col not in mentors_df.columns:
+            st.error(f"'{col}' column is missing in mentors_df.")
+            return
+
+    required_mentee_columns = ['name_id', 'email', 'Senior', 'timezone', 'weighted_preferences']
+    for col in required_mentee_columns:
+        if col not in mentees_df.columns:
+            st.error(f"'{col}' column is missing in mentees_df.")
+            return
+
+    # Ensure the necessary columns are present in mentor_mentee_groups_df
+    required_group_columns = ['Mentor', 'Matched Mentees']
+    for col in required_group_columns:
+        if col not in mentor_mentee_groups_df.columns:
+            st.error(f"'{col}' column is missing in mentor_mentee_groups_df.")
+            return
+
     st.write("mentor_mentee_groups_df columns:", mentor_mentee_groups_df.columns.tolist())
 
     mentees_df = prepare_mentee_embeddings(mentees_df)
@@ -247,7 +267,8 @@ def part2(mentors_df, mentees_df, mentor_mentee_groups_df, leaving_mentors):
 
     st.success("Reassignment complete. Results saved to 'reassigned_mentor_mentee_groups.csv'.")
     st.dataframe(groups_df)
-    st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_1")
+    st.download_button(label="Download Reassigned Groups CSV", data=groups_df.to_csv(index=False), file_name='reassigned_mentor_mentee_groups.csv', key="download_reassigned_groups_2")
+
 
 ###################################################################################################################
 ########################
