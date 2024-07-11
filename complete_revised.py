@@ -142,12 +142,15 @@ def part1(mentors_df, mentees_df):
     new_mentor_mentee_groups = []
     for mentor, mentees in mentor_assignments.items():
         timezone = mentors_df[mentors_df['name_id'] == mentor]['timezone'].values[0]
+        mentor_email = mentors_df[mentors_df['name_id'] == mentor]['email'].values[0]
         mentees_with_scores = [{'Mentee': m[0], 'Similarity Score': m[1]} for m in mentees]
-        new_mentor_mentee_groups.append({'Mentor': mentor, 'Timezone': timezone, 'Matched Mentees': mentees_with_scores})
+        mentee_emails = mentees_df[mentees_df['name_id'].isin([m['Mentee'] for m in mentees_with_scores])]['email'].tolist()
+        new_mentor_mentee_groups.append({'Mentor': mentor, 'Timezone': timezone, 'Matched Mentees': [m['Mentee'] for m in mentees_with_scores], 'Mentor Email': mentor_email, 'Mentees Email': mentee_emails})
 
     new_mentor_mentee_groups_df = pd.DataFrame(new_mentor_mentee_groups)
 
     new_mentor_mentee_groups_df['Matched Mentees'] = new_mentor_mentee_groups_df['Matched Mentees'].apply(str)
+    new_mentor_mentee_groups_df['Mentees Email'] = new_mentor_mentee_groups_df['Mentees Email'].apply(str)
     new_mentor_mentee_groups_df.to_csv('mentor_mentee_groups.csv', index=False)
 
     st.session_state['all_matches_df'] = all_matches_df
