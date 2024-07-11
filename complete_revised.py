@@ -484,7 +484,7 @@ def part4(mentors_df, new_mentees_df, mentor_mentee_groups_df):
     st.dataframe(updated_groups)
     st.dataframe(new_mentees_added_df)
     st.download_button(label="Download Updated Groups CSV", data=updated_groups.to_csv(index=False), file_name='updated_mentor_mentee_groups.csv', key="download_updated_groups_1")
-    st.download_button(label="Download New Mentees Added Groups CSV", data=new_mentees_added_df.to_csv(index=False), file_name='new_mentees_added_groups.csv', key="download_new_mentees_added_groups")
+    st.download_button(label="Download New Mentees Added Groups CSV", data=new_mentees_added_df.to_csv(index=False), file_name='new_mentees_added_groups.csv', key="download_new_mentees_added_groups_2")
 
 
 ###################################################################################################################
