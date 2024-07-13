@@ -3,7 +3,7 @@
 
 This Streamlit application facilitates the matching of mentors and mentees based on their preferences and keywords. It provides various functionalities for initial matching, reassignment, best match finding, adding new mentees to existing groups, and visualizing the results.
 
-DEMO on [Streamlit](https://complete-revised.streamlit.app/)
+DEMO on [Streamlit](https://matching-revised.streamlit.app/)
 
 ## Features
 
