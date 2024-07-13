@@ -66,6 +66,9 @@ To run the app locally, execute the following command:
 ```sh
 pip install -r requirements.txt
 
+
+Running demo on [Streamlit](https://complete-revised.streamlit.app/)
+
 ```sh
 streamlit run complete_revised.py
 
