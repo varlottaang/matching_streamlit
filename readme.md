@@ -3,6 +3,8 @@
 
 This Streamlit application facilitates the matching of mentors and mentees based on their preferences and keywords. It provides various functionalities for initial matching, reassignment, best match finding, adding new mentees to existing groups, and visualizing the results.
 
+DEMO [Streamlit](https://complete-revised.streamlit.app/)
+
 ## Features
 
 1. **Initial Matching**: Match mentors and mentees based on their preferences and keywords.
@@ -65,9 +67,6 @@ To run the app locally, execute the following command:
 
 ```sh
 pip install -r requirements.txt
-
-
-Running demo on [Streamlit](https://complete-revised.streamlit.app/)
 
 ```sh
 streamlit run complete_revised.py
