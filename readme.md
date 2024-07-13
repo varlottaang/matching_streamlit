@@ -70,6 +70,3 @@ pip install -r requirements.txt
 
 ```sh
 streamlit run complete_revised.py
-
-## License
-The project is licensed under the MIT License.
