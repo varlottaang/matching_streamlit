@@ -1,0 +1,115 @@
+name_id,keywords,timezone,email,Senior
+Mentor_1,"Professional Communication, Research Concepts and Project Execution, Industry Job Applications",Slot_1,Mentor_1@example.com,yes
+Mentor_2,"Academia to Industry Transition, Academic Job Applications, Professional Communication",Slot_1,Mentor_2@example.com,no
+Mentor_3,"PhD Applications, Networking in Academia and Industry, Academic Job Applications",Slot_1,Mentor_3@example.com,no
+Mentor_4,"Academic Job Applications, Networking in Academia and Industry, Time Management and Work-Life Balance",Slot_1,Mentor_4@example.com,yes
+Mentor_5,"Academic Job Applications, Time Management and Work-Life Balance, Academia to Industry Transition",Slot_1,Mentor_5@example.com,yes
+Mentor_6,"Academia to Industry Transition, Technical Skills Development, Academic Job Applications",Slot_1,Mentor_6@example.com,yes
+Mentor_DEMO,"Academia to Industry Transition, Technical Skills Development, Academic Job Applications",Slot_2,Mentor_6@example.com,yes
+Mentor_7,"Research Concepts and Project Execution, Academic Job Applications, Networking in Academia and Industry",Slot_1,Mentor_7@example.com,no
+Mentor_8,"Time Management and Work-Life Balance, Academic Job Applications, Professional Communication",Slot_1,Mentor_8@example.com,no
+Mentor_9,"Time Management and Work-Life Balance, Technical Skills Development, Academic Job Applications",Slot_1,Mentor_9@example.com,no
+Mentor_10,"Industry Job Applications, Professional Communication, PhD Applications",Slot_1,Mentor_10@example.com,no
+Mentor_11,"Academia to Industry Transition, Research Concepts and Project Execution, Professional Communication",Slot_1,Mentor_11@example.com,no
+Mentor_12,"Industry Job Applications, Professional Communication, Academia to Industry Transition",Slot_1,Mentor_12@example.com,yes
+Mentor_13,"Professional Communication, Research Concepts and Project Execution, Academia to Industry Transition",Slot_1,Mentor_13@example.com,yes
+Mentor_14,"Industry Job Applications, PhD Applications, Academic Job Applications",Slot_1,Mentor_14@example.com,yes
+Mentor_15,"Technical Skills Development, Academia to Industry Transition, Industry Job Applications",Slot_1,Mentor_15@example.com,yes
+Mentor_16,"Professional Communication, Time Management and Work-Life Balance, Industry Job Applications",Slot_1,Mentor_16@example.com,no
+Mentor_17,"Time Management and Work-Life Balance, Industry Job Applications, Academic Job Applications",Slot_1,Mentor_17@example.com,no
+Mentor_18,"Industry Job Applications, Technical Skills Development, Time Management and Work-Life Balance",Slot_1,Mentor_18@example.com,yes
+Mentor_19,"Research Concepts and Project Execution, Industry Job Applications, Academic Job Applications",Slot_2,Mentor_19@example.com,no
+Mentor_20,"PhD Applications, Research Concepts and Project Execution, Academia to Industry Transition",Slot_2,Mentor_20@example.com,yes
+Mentor_21,"Professional Communication, Time Management and Work-Life Balance, Networking in Academia and Industry",Slot_2,Mentor_21@example.com,yes
+Mentor_22,"Academia to Industry Transition, Professional Communication, Time Management and Work-Life Balance",Slot_2,Mentor_22@example.com,no
+Mentor_23,"Academic Job Applications, Networking in Academia and Industry, Time Management and Work-Life Balance",Slot_2,Mentor_23@example.com,no
+Mentor_24,"Networking in Academia and Industry, Academia to Industry Transition, Research Concepts and Project Execution",Slot_2,Mentor_24@example.com,no
+Mentor_25,"PhD Applications, Technical Skills Development, Academia to Industry Transition",Slot_2,Mentor_25@example.com,no
+Mentor_26,"Technical Skills Development, PhD Applications, Industry Job Applications",Slot_2,Mentor_26@example.com,yes
+Mentor_27,"Time Management and Work-Life Balance, Academia to Industry Transition, PhD Applications",Slot_2,Mentor_27@example.com,no
+Mentor_28,"Professional Communication, Academic Job Applications, Academia to Industry Transition",Slot_2,Mentor_28@example.com,yes
+Mentor_29,"Networking in Academia and Industry, Technical Skills Development, Industry Job Applications",Slot_2,Mentor_29@example.com,yes
+Mentor_30,"Academic Job Applications, Networking in Academia and Industry, Time Management and Work-Life Balance",Slot_3,Mentor_30@example.com,yes
+Mentor_31,"Time Management and Work-Life Balance, Industry Job Applications, PhD Applications",Slot_3,Mentor_31@example.com,no
+Mentor_32,"Technical Skills Development, Time Management and Work-Life Balance, Academic Job Applications",Slot_3,Mentor_32@example.com,yes
+Mentor_33,"Time Management and Work-Life Balance, Technical Skills Development, PhD Applications",Slot_3,Mentor_33@example.com,no
+Mentor_34,"Professional Communication, Technical Skills Development, Networking in Academia and Industry",Slot_3,Mentor_34@example.com,yes
+Mentor_35,"Research Concepts and Project Execution, Academic Job Applications, Time Management and Work-Life Balance",Slot_3,Mentor_35@example.com,no
+Mentor_36,"Industry Job Applications, Research Concepts and Project Execution, Technical Skills Development",Slot_3,Mentor_36@example.com,yes
+Mentor_37,"Time Management and Work-Life Balance, PhD Applications, Industry Job Applications",Slot_3,Mentor_37@example.com,no
+Mentor_38,"Industry Job Applications, Technical Skills Development, PhD Applications",Slot_3,Mentor_38@example.com,no
+Mentor_39,"Academia to Industry Transition, Networking in Academia and Industry, Technical Skills Development",Slot_3,Mentor_39@example.com,no
+Mentor_40,"PhD Applications, Time Management and Work-Life Balance, Industry Job Applications",Slot_3,Mentor_40@example.com,no
+Mentor_41,"Industry Job Applications, Academic Job Applications, Research Concepts and Project Execution",Slot_3,Mentor_41@example.com,no
+Mentor_42,"Time Management and Work-Life Balance, PhD Applications, Academia to Industry Transition",Slot_3,Mentor_42@example.com,no
+Mentor_43,"Research Concepts and Project Execution, Industry Job Applications, Academia to Industry Transition",Slot_3,Mentor_43@example.com,no
+Mentor_44,"Professional Communication, Networking in Academia and Industry, PhD Applications",Slot_3,Mentor_44@example.com,yes
+Mentor_45,"Industry Job Applications, PhD Applications, Academia to Industry Transition",Slot_3,Mentor_45@example.com,yes
+Mentor_46,"Research Concepts and Project Execution, Industry Job Applications, PhD Applications",Slot_3,Mentor_46@example.com,yes
+Mentor_47,"Research Concepts and Project Execution, Academic Job Applications, Technical Skills Development",Slot_3,Mentor_47@example.com,no
+Mentor_48,"Professional Communication, PhD Applications, Time Management and Work-Life Balance",Slot_3,Mentor_48@example.com,no
+Mentor_49,"Research Concepts and Project Execution, Academia to Industry Transition, Professional Communication",Slot_3,Mentor_49@example.com,yes
+Mentor_50,"Technical Skills Development, Networking in Academia and Industry, Academic Job Applications",Slot_3,Mentor_50@example.com,no
+Mentor_51,"Technical Skills Development, Professional Communication, Academia to Industry Transition",Slot_3,Mentor_51@example.com,no
+Mentor_52,"Industry Job Applications, Research Concepts and Project Execution, Technical Skills Development",Slot_3,Mentor_52@example.com,no
+Mentor_53,"Industry Job Applications, Time Management and Work-Life Balance, Academic Job Applications",Slot_4,Mentor_53@example.com,no
+Mentor_54,"Industry Job Applications, Technical Skills Development, Time Management and Work-Life Balance",Slot_4,Mentor_54@example.com,yes
+Mentor_55,"PhD Applications, Academia to Industry Transition, Professional Communication",Slot_4,Mentor_55@example.com,yes
+Mentor_56,"Networking in Academia and Industry, Technical Skills Development, Academia to Industry Transition",Slot_4,Mentor_56@example.com,no
+Mentor_57,"Professional Communication, Research Concepts and Project Execution, Academia to Industry Transition",Slot_4,Mentor_57@example.com,no
+Mentor_58,"Professional Communication, Technical Skills Development, Academic Job Applications",Slot_4,Mentor_58@example.com,yes
+Mentor_59,"PhD Applications, Time Management and Work-Life Balance, Industry Job Applications",Slot_4,Mentor_59@example.com,yes
+Mentor_60,"Academia to Industry Transition, Networking in Academia and Industry, Technical Skills Development",Slot_4,Mentor_60@example.com,no
+Mentor_61,"Technical Skills Development, Research Concepts and Project Execution, Networking in Academia and Industry",Slot_4,Mentor_61@example.com,no
+Mentor_62,"PhD Applications, Networking in Academia and Industry, Academic Job Applications",Slot_4,Mentor_62@example.com,no
+Mentor_63,"Time Management and Work-Life Balance, Technical Skills Development, Academia to Industry Transition",Slot_4,Mentor_63@example.com,no
+Mentor_64,"Professional Communication, Industry Job Applications, Academic Job Applications",Slot_4,Mentor_64@example.com,no
+Mentor_65,"Professional Communication, PhD Applications, Networking in Academia and Industry",Slot_4,Mentor_65@example.com,yes
+Mentor_66,"Academia to Industry Transition, Academic Job Applications, Networking in Academia and Industry",Slot_4,Mentor_66@example.com,no
+Mentor_67,"Networking in Academia and Industry, Technical Skills Development, Research Concepts and Project Execution",Slot_4,Mentor_67@example.com,no
+Mentor_68,"Technical Skills Development, Networking in Academia and Industry, Academia to Industry Transition",Slot_4,Mentor_68@example.com,no
+Mentor_69,"Time Management and Work-Life Balance, Technical Skills Development, Professional Communication",Slot_4,Mentor_69@example.com,no
+Mentor_70,"Professional Communication, Research Concepts and Project Execution, Industry Job Applications",Slot_4,Mentor_70@example.com,yes
+Mentor_71,"PhD Applications, Industry Job Applications, Academic Job Applications",Slot_4,Mentor_71@example.com,no
+Mentor_72,"Research Concepts and Project Execution, Industry Job Applications, Professional Communication",Slot_4,Mentor_72@example.com,yes
+Mentor_73,"Academic Job Applications, Academia to Industry Transition, Time Management and Work-Life Balance",Slot_4,Mentor_73@example.com,no
+Mentor_74,"Technical Skills Development, Academic Job Applications, Research Concepts and Project Execution",Slot_4,Mentor_74@example.com,no
+Mentor_75,"Time Management and Work-Life Balance, Industry Job Applications, Academic Job Applications",Slot_4,Mentor_75@example.com,no
+Mentor_76,"Networking in Academia and Industry, PhD Applications, Technical Skills Development",Slot_4,Mentor_76@example.com,yes
+Mentor_77,"Professional Communication, Networking in Academia and Industry, Technical Skills Development",Slot_4,Mentor_77@example.com,yes
+Mentor_78,"Professional Communication, Technical Skills Development, Time Management and Work-Life Balance",Slot_4,Mentor_78@example.com,yes
+Mentor_79,"Technical Skills Development, Academia to Industry Transition, Industry Job Applications",Slot_4,Mentor_79@example.com,no
+Mentor_80,"PhD Applications, Academia to Industry Transition, Time Management and Work-Life Balance",Slot_4,Mentor_80@example.com,no
+Mentor_81,"Academia to Industry Transition, Research Concepts and Project Execution, Time Management and Work-Life Balance",Slot_4,Mentor_81@example.com,yes
+Mentor_82,"PhD Applications, Industry Job Applications, Time Management and Work-Life Balance",Slot_4,Mentor_82@example.com,yes
+Mentor_83,"Networking in Academia and Industry, Academic Job Applications, Professional Communication",Slot_4,Mentor_83@example.com,no
+Mentor_84,"Technical Skills Development, Professional Communication, Research Concepts and Project Execution",Slot_4,Mentor_84@example.com,yes
+Mentor_85,"Industry Job Applications, Academia to Industry Transition, PhD Applications",Slot_4,Mentor_85@example.com,no
+Mentor_86,"Industry Job Applications, Technical Skills Development, Research Concepts and Project Execution",Slot_4,Mentor_86@example.com,no
+Mentor_87,"Academia to Industry Transition, Time Management and Work-Life Balance, Research Concepts and Project Execution",Slot_4,Mentor_87@example.com,yes
+Mentor_88,"Technical Skills Development, Research Concepts and Project Execution, Networking in Academia and Industry",Slot_4,Mentor_88@example.com,no
+Mentor_89,"Research Concepts and Project Execution, Professional Communication, Networking in Academia and Industry",Slot_4,Mentor_89@example.com,no
+Mentor_90,"Industry Job Applications, Time Management and Work-Life Balance, Technical Skills Development",Slot_4,Mentor_90@example.com,no
+Mentor_91,"PhD Applications, Time Management and Work-Life Balance, Academic Job Applications",Slot_4,Mentor_91@example.com,no
+Mentor_92,"Technical Skills Development, Time Management and Work-Life Balance, PhD Applications",Slot_4,Mentor_92@example.com,no
+Mentor_93,"Time Management and Work-Life Balance, Professional Communication, Academia to Industry Transition",Slot_4,Mentor_93@example.com,no
+Mentor_94,"Academia to Industry Transition, Technical Skills Development, Academic Job Applications",Slot_5,Mentor_94@example.com,yes
+Mentor_95,"Networking in Academia and Industry, Research Concepts and Project Execution, Professional Communication",Slot_5,Mentor_95@example.com,yes
+Mentor_96,"Technical Skills Development, Time Management and Work-Life Balance, Industry Job Applications",Slot_5,Mentor_96@example.com,yes
+Mentor_97,"Academic Job Applications, Research Concepts and Project Execution, Professional Communication",Slot_5,Mentor_97@example.com,no
+Mentor_98,"Networking in Academia and Industry, Research Concepts and Project Execution, PhD Applications",Slot_5,Mentor_98@example.com,yes
+Mentor_99,"Academic Job Applications, Research Concepts and Project Execution, Networking in Academia and Industry",Slot_5,Mentor_99@example.com,yes
+Mentor_100,"Research Concepts and Project Execution, Time Management and Work-Life Balance, Industry Job Applications",Slot_5,Mentor_100@example.com,yes
+Mentor_101,"Research Concepts and Project Execution, Networking in Academia and Industry, PhD Applications",Slot_5,Mentor_101@example.com,yes
+Mentor_102,"PhD Applications, Academia to Industry Transition, Research Concepts and Project Execution",Slot_5,Mentor_102@example.com,yes
+Mentor_103,"Professional Communication, PhD Applications, Technical Skills Development",Slot_5,Mentor_103@example.com,no
+Mentor_104,"Academia to Industry Transition, Time Management and Work-Life Balance, Industry Job Applications",Slot_5,Mentor_104@example.com,yes
+Mentor_105,"Networking in Academia and Industry, Industry Job Applications, Academia to Industry Transition",Slot_5,Mentor_105@example.com,yes
+Mentor_106,"Academia to Industry Transition, Industry Job Applications, Networking in Academia and Industry",Slot_5,Mentor_106@example.com,no
+Mentor_107,"Research Concepts and Project Execution, Academia to Industry Transition, PhD Applications",Slot_5,Mentor_107@example.com,yes
+Mentor_108,"Industry Job Applications, Academic Job Applications, Networking in Academia and Industry",Slot_5,Mentor_108@example.com,no
+Mentor_109,"Technical Skills Development, Professional Communication, Industry Job Applications",Slot_5,Mentor_109@example.com,yes
+Mentor_110,"Industry Job Applications, Time Management and Work-Life Balance, Professional Communication",Slot_5,Mentor_110@example.com,yes
+Mentor_111,"Research Concepts and Project Execution, Academia to Industry Transition, Academic Job Applications",Slot_5,Mentor_111@example.com,yes
+Mentor_112,"Time Management and Work-Life Balance, Professional Communication, Technical Skills Development",Slot_5,Mentor_112@example.com,no
+Mentor_113,"Technical Skills Development, Academia to Industry Transition, Research Concepts and Project Execution",Slot_5,Mentor_113@example.com,no
